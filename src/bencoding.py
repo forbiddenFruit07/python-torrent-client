@@ -9,11 +9,9 @@ class BDecoder:
         """
         c = self.peek()
 
-        # print(f"DEBUG: Index={self.index}, Char={c}, Remainder={self.data[self.index:]}")
         if c is None:
             raise EOFError("End of data")
-        # In Python, a single byte from a bytes object is an integer.
-        # ASCII 'i' is 105.
+
         if c==b'i':
             return self.decode_int()
         elif c.isdigit():
@@ -83,11 +81,38 @@ class BDecoder:
         return output
         
 
-# Simple test to run this file
+
 def decode(source: bytes):
     decoder = BDecoder(source)
     return decoder.decode()
 
+def encoder(data):
+    if isinstance(data,int):
+        return b'i'+str(data).encode()+b'e'
+    
+    elif isinstance(data,str):
+        return str(len(data)).encode()+b':'+data.encode()
+    
+    elif isinstance(data,bytes):
+        return str(len(data)).encode()+b':'+data
+    
+    elif isinstance(data,list):
+        res=b'l'
+        for i in data:
+            res+=encoder(i)
+        return res+b'e'
+    
+    elif isinstance(data,dict):
+        res=b'd'
+        for i in sorted(data):
+            res+=encoder(i)
+            res+=encoder(data[i])
+        return res+b'e'
+    
+    else:
+        raise TypeError(f'Cannot encode data of type: {type(data)}')
+    
+# Simple test to run this file
 if __name__ == "__main__":
     # Test everything
     print(decode(b"li42e4:spame")) 
@@ -96,3 +121,5 @@ if __name__ == "__main__":
     print(decode(b"d3:foo3:bar5:helloi52ee")) 
 
     # Output: {b'foo': b'bar', b'hello': 52}
+    print(encoder([42, b'spam']))
+    print(encoder({b'foo': b'bar', b'hello': 52}))
