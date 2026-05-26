@@ -91,7 +91,8 @@ def encoder(data):
         return b'i'+str(data).encode()+b'e'
     
     elif isinstance(data,str):
-        return str(len(data)).encode()+b':'+data.encode()
+        encoded_bytes=data.encode('utf-8')
+        return str(len(encoded_bytes)).encode()+b':'+encoded_bytes
     
     elif isinstance(data,bytes):
         return str(len(data)).encode()+b':'+data
