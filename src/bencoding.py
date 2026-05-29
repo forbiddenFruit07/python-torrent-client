@@ -11,7 +11,6 @@ class BDecoder:
 
         if c is None:
             raise EOFError("End of data")
-
         if c==b'i':
             return self.decode_int()
         elif c.isdigit():

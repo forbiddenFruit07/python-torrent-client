@@ -23,7 +23,7 @@ class TorrentReader:
 #simple test:
 if __name__=="__main__":
     try:
-        torrent = TorrentReader("ubuntu-24.04.3.torrent")
+        torrent = TorrentReader("ubuntu-26.04.torrent")
         print(f"Tracker: {torrent.tracker_url}")
         print(f"Info Hash: {torrent.info_hash.hex()}")
         print(f"Total Size: {torrent.total_size / (1024**2):.2f} MB")
