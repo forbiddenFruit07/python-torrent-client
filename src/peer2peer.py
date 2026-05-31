@@ -59,8 +59,8 @@ if __name__ == '__main__':
     handshake=create_handshake(peer_id,info_hash)
     if peers:
         first_peer = peers[0]
-        
         peer_ip = first_peer[0]
         peer_port = first_peer[1]
-        
         connect_to_peer(peer_ip, peer_port, handshake, info_hash)
+    else:
+        print('No peers found in the tracker response.')
