@@ -115,10 +115,10 @@ def encoder(data):
 # Simple test to run this file
 if __name__ == "__main__":
     # Test everything
-    print(decoder(b"li42e4:spame")) 
+    print(decoder(b"li42e4:spame"))
     # Output: [42, b'spam']
     
-    print(decoder(b"d3:foo3:bar5:helloi52ee")) 
+    print(decoder(b"d3:foo3:bar5:helloi52ee"))
 
     # Output: {b'foo': b'bar', b'hello': 52}
     print(encoder([42, b'spam']))

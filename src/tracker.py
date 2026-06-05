@@ -55,7 +55,7 @@ def get_peers(torrent_file):
                 
         else:
             print("No peers found in tracker response.")
-        print(f"Peers: {len(peers) if peers else 0}")
+        # print(f"Peers: {len(peers) if peers else 0}")
         
         return peers_list
 

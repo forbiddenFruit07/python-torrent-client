@@ -59,6 +59,7 @@ class PeerConnection:
         return False
     
     async def message_loop(self):
+        '''continuously listens and parses incoming messages from the peer after a successful handshake.'''
         print("Listening for messages from peer...")
         try:
             while True:
@@ -72,6 +73,23 @@ class PeerConnection:
                     continue
                 message = await self.reader.readexactly(message_length)
                 
+                id_bytes = await self.reader.readexactly(1)
+                message_id = struct.unpack('>B', id_bytes)[0]
+
+                payload_length = message_length - 1
+                payload= b''
+                if payload_length > 0:
+                    payload = await self.reader.readexactly(payload_length)
+
+                #TODO: Handle the message based on its type (message_id) and payload
+        except asyncio.IncompleteReadError:
+            print("Peer closed the connection.")
+        except asyncio.TimeoutError:
+            print("Message read timed out.")
+        except Exception as e:
+            print(f"Error in message loop: {e}")
+        finally:
+            await self.disconnect()
 
 
     async def disconnect(self):
@@ -93,6 +111,7 @@ async def main():
     info_hash=torrent.info_hash
     parsed_peers=tracker.get_peers(file)
 
+    #only connect to the first 5 peers for testing
     peers= [PeerConnection(peer[0],peer[1],peer_id,info_hash) for peer in parsed_peers[:5]]
 
     tasks=[peer.connect_and_handshake() for peer in peers]
