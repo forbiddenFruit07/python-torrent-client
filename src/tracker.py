@@ -38,20 +38,28 @@ def get_peers(torrent_file):
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(f"Error contacting tracker: {e}")
+    # ... [previous code remains the same] ...
     else:
-        peers_list=[]
+        peers_list = []
         tracker_response = decoder(response.content)
-        peers=tracker_response.get(b'peers')
+        peers = tracker_response.get(b'peers')
+        
         if isinstance(peers, bytes):
-            for i in range(0, len(peers), 6):
-                ip = socket.inet_aton(peers[i:i+4])
-                port= struct.unpack('!H',peers[i+4:i+6])[0]
-                peers_list.append((ip,port))
+            # Ensure we only iterate over complete 6-byte chunks
+            # to prevent slicing errors at the end of malformed byte strings
+            valid_length = len(peers) - (len(peers) % 6) 
+            
+            for i in range(0, valid_length, 6):
+                # Use inet_ntoa (Network TO Ascii) to convert bytes to IP string
+                ip = socket.inet_ntoa(peers[i:i+4])
+                port = struct.unpack('!H', peers[i+4:i+6])[0]
+                peers_list.append((ip, port))
+                
         elif isinstance(peers, list):
             for peer in peers:
-                ip=peer[b'ip'].decode()
-                port=peer[b'port']
-                peers_list.append((ip,port))
+                ip = peer[b'ip'].decode()
+                port = peer[b'port']
+                peers_list.append((ip, port))
                 
         else:
             print("No peers found in tracker response.")

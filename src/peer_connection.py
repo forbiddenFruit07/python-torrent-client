@@ -112,7 +112,7 @@ async def main():
     parsed_peers=tracker.get_peers(file)
 
     #only connect to the first 5 peers for testing
-    peers= [PeerConnection(peer[0],peer[1],peer_id,info_hash) for peer in parsed_peers[:5]]
+    peers= [PeerConnection(peer[0],peer[1],peer_id,info_hash) for peer in parsed_peers[:2]]
 
     tasks=[peer.connect_and_handshake() for peer in peers]
 
